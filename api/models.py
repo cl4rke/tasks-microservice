@@ -19,7 +19,7 @@ class Task(models.Model):
     description = models.CharField(max_length=255)
     assigned_to = models.ForeignKey(User, related_name='assigned_user_id')
     estimated_time = models.IntegerField()
-    time_completed = models.IntegerField()
+    time_completed = models.IntegerField(blank=True, null=True)
     is_completed = models.BooleanField()
     dependency = models.ForeignKey('Task', blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='created_by_user_id')
