@@ -29,7 +29,8 @@ def login(request):
 def change_password(request):
     if request.method == 'POST':
         data = request.POST
-        authorized = request.user.check_password(data['old_password'])
+        user = request.user
+        authorized = user.check_password(data['old_password'])
 
         if not authorized:
             return JsonResponse({

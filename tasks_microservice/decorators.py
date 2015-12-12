@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from api.models import ApiKey
 
 
 def api_confirmation(view_func):
@@ -13,16 +14,16 @@ def api_confirmation(view_func):
                 },
             }, status=403)
 
-        user = User.objects.filter(id=data['HTTP_X_AUTHORIZATION'])
+        api_key = ApiKey.objects.filter(value=data['HTTP_X_AUTHORIZATION'])
 
-        if not user.exists():
+        if not api_key.exists():
             return JsonResponse({
                 'data': {
                     'message': 'Incorrect API key.',
                 },
             }, status=401)
 
-        request.user = user.first()
+        request.user = api_key.first().user
 
         return view_func(request, *args, **kwargs)
     return wrapped_view
