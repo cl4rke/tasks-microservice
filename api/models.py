@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 class ApiKey(models.Model):
     value = models.CharField(max_length=255)
     user = models.OneToOneField(User)
+    last_login = models.DateTimeField()
 
     def __str__(self):
         return "[%s] %s" % (self.user.username, self.value)

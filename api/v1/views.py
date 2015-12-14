@@ -1,6 +1,7 @@
 from django.http import JsonResponse, HttpResponseNotFound
 from django.contrib.auth import authenticate
 from tasks_microservice.decorators import api_confirmation
+from datetime import datetime
 
 
 def login(request):
@@ -9,6 +10,9 @@ def login(request):
         user = authenticate(username=data['username'], password=data['password'])
 
         if user is not None:
+            user.apikey.last_login = last_login=datetime.now()
+            user.apikey.save()
+
             return JsonResponse({
                 'data': {
                     'api_key': user.apikey.value,
