@@ -1,6 +1,8 @@
 from django.http import JsonResponse, HttpResponseNotFound
 from django.contrib.auth import authenticate
+from django.db.models import Q
 from tasks_microservice.decorators import api_confirmation
+from api.models import *
 from datetime import datetime
 
 
@@ -56,6 +58,75 @@ def change_password(request):
         return JsonResponse({
             'data': {
                 'message': 'Successfully changed password.',
+            },
+        })
+
+    return HttpResponseNotFound()
+
+
+@api_confirmation
+def tasks(request):
+    if request.method == 'GET':
+        return JsonResponse({
+            'data': [task.serialize() for task in Task.objects.all()]
+        })
+
+    if request.method == 'POST':
+        data = request.POST
+        user = request.user
+
+        task = Task(name=data['name'], description=data['description'], created_by=user, is_completed=False, estimated_time=data['estimated_time'])
+        task.save()
+
+        return JsonResponse({
+            'data': {
+                'message': 'Successfully added task!',
+            },
+        })
+
+    return HttpResponseNotFound()
+
+
+@api_confirmation
+def messages(request):
+    if request.method == 'GET':
+        return JsonResponse({
+            'data': [message.serialize() for message in Message.objects.filter(Q(sender=request.user) | Q(receiver=request.user))]
+        })
+
+    if request.method == 'POST':
+        data = request.POST
+        user = request.user
+
+        message = Message(name=data['name'], receiver=User.objects.filter(username=data['username']).first(), sender=user)
+        message.save()
+
+        return JsonResponse({
+            'data': {
+                'message': 'Successfully sent message!',
+            },
+        })
+
+    return HttpResponseNotFound()
+
+
+@api_confirmation
+def absences(request):
+    if request.method == 'GET':
+        return JsonResponse({
+            'data': [absence.serialize() for absence in Absence.objects.all()]
+        })
+
+    if request.method == 'POST':
+        data = request.POST
+        user = request.user
+
+        absence = Absence(date=data['date'], is_approved=False, user=user)
+        absence.save()
+
+        return JsonResponse({
+            'data': {
+                'message': 'Successfully requested absence!',
             },
         })
 

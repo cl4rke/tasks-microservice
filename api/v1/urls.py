@@ -6,5 +6,8 @@ from . import views
 urlpatterns = [
     url(r'^login', views.login),
     url(r'^change-password', views.change_password),
+    url(r'^tasks', views.tasks),
+    url(r'^messages', views.messages),
+    url(r'^absences', views.absences),
 ]
 
