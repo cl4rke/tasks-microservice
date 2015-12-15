@@ -4,7 +4,15 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class ApiKey(models.Model):
+class RecordedModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class ApiKey(RecordedModel):
     value = models.CharField(max_length=255)
     user = models.OneToOneField(User)
     last_login = models.DateTimeField()
@@ -13,14 +21,14 @@ class ApiKey(models.Model):
         return "[%s] %s" % (self.user.username, self.value)
 
 
-class Skill(models.Model):
+class Skill(RecordedModel):
     name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
 
 
-class SkillValue(models.Model):
+class SkillValue(RecordedModel):
     user = models.ForeignKey(User)
     skill = models.ForeignKey(Skill)
     value = models.FloatField()
@@ -34,7 +42,7 @@ class SkillValue(models.Model):
                 }
 
 
-class Task(models.Model):
+class Task(RecordedModel):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     assigned_to = models.ForeignKey(User, related_name='assigned_user_id', null=True, blank=True)
@@ -60,7 +68,7 @@ class Task(models.Model):
                 }
 
 
-class Absence(models.Model):
+class Absence(RecordedModel):
     date = models.DateField()
     is_approved = models.BooleanField()
     user = models.ForeignKey(User)
@@ -75,7 +83,7 @@ class Absence(models.Model):
                 'date': self.date,
                 }
 
-class Message(models.Model):
+class Message(RecordedModel):
     sender = models.ForeignKey(User, related_name='sender_user_id')
     receiver = models.ForeignKey(User, related_name='receiver_user_id')
     content = models.TextField()
