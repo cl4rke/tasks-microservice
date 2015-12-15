@@ -23,7 +23,7 @@ class Skill(models.Model):
 class SkillValue(models.Model):
     user = models.ForeignKey(User)
     skill = models.ForeignKey(Skill)
-    value = models.IntegerField()
+    value = models.FloatField()
 
     def __str__(self):
         return "[%s] %s - %s" % (self.user.username, self.skill, self.value)
