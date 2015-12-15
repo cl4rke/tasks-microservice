@@ -40,8 +40,6 @@ def required_fields(method, *fields):
                     if field not in data:
                         missing_fields.append(field)
 
-                print missing_fields
-
                 if len(missing_fields):
                     return JsonResponse({
                         'data': {
