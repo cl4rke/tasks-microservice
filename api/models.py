@@ -81,7 +81,7 @@ class Message(models.Model):
     content = models.TextField()
 
     def __str__(self):
-        return "[%s --- %s] %s" % (self.sender, self.receiver, self.name)
+        return "[%s --- %s] %s" % (self.sender, self.receiver, self.content)
 
     def serialize(self):
         return {
