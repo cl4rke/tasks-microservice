@@ -85,7 +85,7 @@ class Message(models.Model):
 
     def serialize(self):
         return {
-                'name': self.name,
+                'name': self.content,
                 'sender': self.sender.username,
                 'receiver': self.receiver.username,
                 }
