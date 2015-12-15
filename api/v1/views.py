@@ -1,7 +1,7 @@
 from django.http import JsonResponse, HttpResponseNotFound
 from django.contrib.auth import authenticate
 from django.db.models import Q
-from tasks_microservice.decorators import api_confirmation
+from tasks_microservice.decorators import api_confirmation, required_fields
 from api.models import *
 from datetime import datetime
 
@@ -32,6 +32,7 @@ def login(request):
 
 
 @api_confirmation
+@required_fields('POST', 'password', 'old_password', 'password_confirmation')
 def change_password(request):
     if request.method == 'POST':
         data = request.POST
@@ -65,6 +66,7 @@ def change_password(request):
 
 
 @api_confirmation
+@required_fields('POST', 'name', 'description', 'estimated_time')
 def tasks(request):
     if request.method == 'GET':
         return JsonResponse({
@@ -88,6 +90,7 @@ def tasks(request):
 
 
 @api_confirmation
+@required_fields('POST', 'name', 'username')
 def messages(request):
     if request.method == 'GET':
         return JsonResponse({
@@ -111,6 +114,7 @@ def messages(request):
 
 
 @api_confirmation
+@required_fields('POST', 'date')
 def absences(request):
     if request.method == 'GET':
         return JsonResponse({

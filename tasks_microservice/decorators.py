@@ -28,3 +28,28 @@ def api_confirmation(view_func):
         return view_func(request, *args, **kwargs)
     return wrapped_view
 
+
+def required_fields(method, *fields):
+    def decorator(view_func):
+        def wrapped_view(request, *args2, **kwargs):
+            if request.method == method:
+                data = request.POST
+                missing_fields = []
+
+                for field in fields:
+                    if field not in data:
+                        missing_fields.append(field)
+
+                print missing_fields
+
+                if len(missing_fields):
+                    return JsonResponse({
+                        'data': {
+                            'missing_fields': missing_fields,
+                        },
+                    }, status=422)
+
+            return view_func(request)
+        return wrapped_view
+    return decorator
+
