@@ -29,21 +29,17 @@ def api_confirmation(view_func):
     return wrapped_view
 
 
-def required_fields(method, *fields):
+def form_validation(method, form_class):
     def decorator(view_func):
         def wrapped_view(request, *args2, **kwargs):
             if request.method == method:
                 data = request.POST
-                missing_fields = []
+                form = form_class(data)
 
-                for field in fields:
-                    if field not in data:
-                        missing_fields.append(field)
-
-                if len(missing_fields):
+                if form.errors:
                     return JsonResponse({
                         'data': {
-                            'missing_fields': missing_fields,
+                            'errors': form.errors,
                         },
                     }, status=422)
 

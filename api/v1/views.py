@@ -1,11 +1,13 @@
 from django.http import JsonResponse, HttpResponseNotFound
 from django.contrib.auth import authenticate
 from django.db.models import Q
-from tasks_microservice.decorators import api_confirmation, required_fields
+from tasks_microservice.decorators import api_confirmation, form_validation
 from api.models import *
+from api import forms
 from datetime import datetime
 
 
+@form_validation('POST', forms.LoginForm)
 def login(request):
     if request.method == 'POST':
         data = request.POST
@@ -32,7 +34,7 @@ def login(request):
 
 
 @api_confirmation
-@required_fields('POST', 'password', 'old_password', 'password_confirmation')
+@form_validation('POST', forms.ChangePasswordForm)
 def change_password(request):
     if request.method == 'POST':
         data = request.POST
@@ -66,7 +68,7 @@ def change_password(request):
 
 
 @api_confirmation
-@required_fields('POST', 'name', 'description', 'estimated_time')
+@form_validation('POST', forms.CreateTaskForm)
 def tasks(request):
     if request.method == 'GET':
         return JsonResponse({
@@ -90,7 +92,7 @@ def tasks(request):
 
 
 @api_confirmation
-@required_fields('POST', 'content', 'username')
+@form_validation('POST', forms.CreateMessageForm)
 def messages(request):
     if request.method == 'GET':
         return JsonResponse({
@@ -114,7 +116,7 @@ def messages(request):
 
 
 @api_confirmation
-@required_fields('POST', 'date')
+@form_validation('POST', forms.CreateAbsenceForm)
 def absences(request):
     if request.method == 'GET':
         return JsonResponse({
