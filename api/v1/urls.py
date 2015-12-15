@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'^tasks', views.tasks),
     url(r'^messages', views.messages),
     url(r'^absences', views.absences),
+    url(r'^skills', views.skills),
 ]
 

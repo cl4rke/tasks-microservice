@@ -132,3 +132,51 @@ def absences(request):
 
     return HttpResponseNotFound()
 
+
+@api_confirmation
+def skills(request):
+    if request.method == 'GET':
+        user = request.user
+        return JsonResponse({
+            'data': [skill_value.serialize() for skill_value in user.skillvalue_set.all()]
+        })
+
+    if request.method == 'POST':
+        data = request.POST
+        user = request.user
+
+        accepted_skill_names = []
+        rejected_skill_names = []
+
+        skill_names = data.keys()
+
+        for skill_name in skill_names:
+            skill = Skill.objects.filter(name__iexact=skill_name)
+
+            if skill.exists():
+                accepted_skill_names.append(skill_name)
+                skill = skill.first()
+
+                skill_value = user.skillvalue_set.filter(skill=skill)
+
+                if not skill_value.exists():
+                    skill_value = SkillValue(user=user, skill=skill, value=data[skill_name])
+                else:
+                    skill_value = skill_value.first()
+                    skill_value.value = data[skill_name]
+
+                skill_value.save()
+
+            else:
+                rejected_skill_names.append(skill_name)
+
+        return JsonResponse({
+            'data': {
+                'message': 'Successfully added new skillsets!',
+                'accepted_skill_names': accepted_skill_names,
+                'rejected_skill_names': rejected_skill_names,
+            },
+        })
+
+    return HttpResponseNotFound()
+

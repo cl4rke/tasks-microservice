@@ -16,11 +16,22 @@ class ApiKey(models.Model):
 class Skill(models.Model):
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+
 
 class SkillValue(models.Model):
     user = models.ForeignKey(User)
     skill = models.ForeignKey(Skill)
     value = models.IntegerField()
+
+    def __str__(self):
+        return "[%s] %s - %s" % (self.user.username, self.skill, self.value)
+
+    def serialize(self):
+        return {
+                self.skill.name: self.value
+                }
 
 
 class Task(models.Model):
