@@ -78,7 +78,7 @@ class Absence(models.Model):
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='sender_user_id')
     receiver = models.ForeignKey(User, related_name='receiver_user_id')
-    name = models.TextField()
+    content = models.TextField()
 
     def __str__(self):
         return "[%s --- %s] %s" % (self.sender, self.receiver, self.name)

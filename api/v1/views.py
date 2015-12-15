@@ -90,7 +90,7 @@ def tasks(request):
 
 
 @api_confirmation
-@required_fields('POST', 'name', 'username')
+@required_fields('POST', 'content', 'username')
 def messages(request):
     if request.method == 'GET':
         return JsonResponse({
@@ -101,7 +101,7 @@ def messages(request):
         data = request.POST
         user = request.user
 
-        message = Message(name=data['name'], receiver=User.objects.filter(username=data['username']).first(), sender=user)
+        message = Message(content=data['content'], receiver=User.objects.filter(username=data['username']).first(), sender=user)
         message.save()
 
         return JsonResponse({
