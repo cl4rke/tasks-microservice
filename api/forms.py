@@ -16,7 +16,7 @@ class ChangePasswordForm(forms.Form):
 class CreateTaskForm(forms.Form):
     name = forms.CharField()
     description = forms.CharField()
-    estimated_time = forms.IntegerField()
+    estimated_time = forms.FloatField()
 
 
 class CreateMessageForm(forms.Form):
