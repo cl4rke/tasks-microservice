@@ -93,7 +93,7 @@ class Message(RecordedModel):
 
     def serialize(self):
         return {
-                'name': self.content,
+                'content': self.content,
                 'sender': self.sender.username,
                 'receiver': self.receiver.username,
                 }
