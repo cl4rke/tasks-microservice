@@ -140,6 +140,7 @@ def absences(request):
 
 
 @api_confirmation
+@form_validation('POST', forms.CreateSkillForm)
 def skills(request):
     if request.method == 'GET':
         user = request.user
@@ -151,36 +152,20 @@ def skills(request):
         data = request.POST
         user = request.user
 
-        accepted_skill_names = []
-        rejected_skill_names = []
+        skill = Skill.objects.filter(name__iexact=data['name']).first()
+        skill_value = user.skillvalue_set.filter(skill=skill)
 
-        skill_names = data.keys()
+        if not skill_value.exists():
+            skill_value = SkillValue(user=user, skill=skill, value=data['value'])
+        else:
+            skill_value = skill_value.first()
+            skill_value.value = data['value']
 
-        for skill_name in skill_names:
-            skill = Skill.objects.filter(name__iexact=skill_name)
-
-            if skill.exists():
-                accepted_skill_names.append(skill_name)
-                skill = skill.first()
-
-                skill_value = user.skillvalue_set.filter(skill=skill)
-
-                if not skill_value.exists():
-                    skill_value = SkillValue(user=user, skill=skill, value=data[skill_name])
-                else:
-                    skill_value = skill_value.first()
-                    skill_value.value = data[skill_name]
-
-                skill_value.save()
-
-            else:
-                rejected_skill_names.append(skill_name)
+        skill_value.save()
 
         return JsonResponse({
             'data': {
-                'message': 'Successfully added new skillsets!',
-                'accepted_skill_names': accepted_skill_names,
-                'rejected_skill_names': rejected_skill_names,
+                'message': 'Successfully updated skill!',
             },
         })
 

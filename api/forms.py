@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from api.models import Skill
 
 
 class LoginForm(forms.Form):
@@ -35,4 +36,18 @@ class CreateMessageForm(forms.Form):
 
 class CreateAbsenceForm(forms.Form):
     date = forms.DateField()
+
+
+class CreateSkillForm(forms.Form):
+    name = forms.CharField()
+    value = forms.FloatField()
+
+    def clean_name(self):
+        data = self.cleaned_data['name']
+        skill = Skill.objects.filter(name__iexact=data)
+
+        if not skill.exists():
+            raise forms.ValidationError("Skill name is invalid!")
+
+        return data
 
